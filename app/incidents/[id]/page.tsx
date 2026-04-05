@@ -18,9 +18,13 @@ export default async function IncidentDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const incident = await fetchIncident(id);
 
-  if (!incident) notFound();
+  let incident;
+  try {
+    incident = await fetchIncident(id);
+  } catch {
+    notFound();
+  }
 
   const rawContext = (() => {
     try {
@@ -96,8 +100,17 @@ export default async function IncidentDetailPage({
               </div>
               <div>
                 <p className="text-muted-foreground mb-1">Proposed Fix</p>
-                <p>{incident.proposedFix}</p>
+                <p className="whitespace-pre-wrap">{incident.proposedFix}</p>
               </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Diagnosing state */}
+        {incident.status === 'diagnosing' && (
+          <Card>
+            <CardContent className="pt-6 text-sm text-muted-foreground">
+              AI diagnostic in progress — refresh in a few seconds.
             </CardContent>
           </Card>
         )}
@@ -109,7 +122,9 @@ export default async function IncidentDetailPage({
               <CardTitle className="text-base">Pull Request</CardTitle>
             </CardHeader>
             <CardContent className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">{incident.prUrl}</p>
+              <p className="text-sm text-muted-foreground truncate mr-4">
+                {incident.prUrl}
+              </p>
               <Button asChild size="sm">
                 <a
                   href={incident.prUrl}
@@ -123,12 +138,12 @@ export default async function IncidentDetailPage({
           </Card>
         )}
 
-        {/* Below threshold notice */}
+        {/* Below threshold */}
         {incident.status === 'below_threshold' && (
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="pt-6 text-sm text-yellow-800">
-              Confidence score ({Math.round((incident.confidenceScore ?? 0) * 100)}%) 
-              is below the threshold — no PR was opened. 
+          <Card className="border-yellow-200 bg-yellow-50 dark:bg-yellow-950 dark:border-yellow-800">
+            <CardContent className="pt-6 text-sm text-yellow-800 dark:text-yellow-200">
+              Confidence score ({Math.round((incident.confidenceScore ?? 0) * 100)}%)
+              is below the threshold — no PR was opened.
               Review the diagnostic above and apply the fix manually if appropriate.
             </CardContent>
           </Card>
@@ -136,8 +151,8 @@ export default async function IncidentDetailPage({
 
         {/* Error */}
         {incident.status === 'error' && incident.errorMessage && (
-          <Card className="border-red-200 bg-red-50">
-            <CardContent className="pt-6 text-sm text-red-800">
+          <Card className="border-red-200 bg-red-50 dark:bg-red-950 dark:border-red-800">
+            <CardContent className="pt-6 text-sm text-red-800 dark:text-red-200">
               <p className="font-medium mb-1">Processing error</p>
               <p className="font-mono">{incident.errorMessage}</p>
             </CardContent>
@@ -150,7 +165,7 @@ export default async function IncidentDetailPage({
             <CardTitle className="text-base">Raw Context</CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="text-xs bg-muted p-4 rounded-md overflow-auto max-h-48">
+            <pre className="text-xs bg-muted p-4 rounded-md overflow-auto max-h-48 whitespace-pre-wrap">
               {rawContext}
             </pre>
           </CardContent>
