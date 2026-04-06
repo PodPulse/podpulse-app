@@ -2,6 +2,7 @@
 
 import { useEffect, useEffectEvent } from 'react';
 
+import { normalizeIncident } from '@/lib/api';
 import { Incident } from '@/lib/types';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:5051';
@@ -26,7 +27,7 @@ export function useIncidentStream(
 
       nextEventSource.onmessage = (event) => {
         try {
-          const incident: Incident = JSON.parse(event.data);
+          const incident: Incident = normalizeIncident(JSON.parse(event.data));
           handleIncident(incident);
         } catch {
           console.error('Failed to parse SSE event', event.data);

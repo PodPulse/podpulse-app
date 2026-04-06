@@ -81,11 +81,11 @@ const prStatusMeta: Record<PrStatus, PrMeta> = {
 };
 
 export function getIncidentStatusMeta(status: IncidentStatus) {
-  return incidentStatusMeta[status];
+  return incidentStatusMeta[status] ?? incidentStatusMeta.received;
 }
 
 export function getPrStatusMeta(status: PrStatus) {
-  return prStatusMeta[status];
+  return prStatusMeta[status] ?? prStatusMeta.none;
 }
 
 export function getConfidenceMeta(score: number | null): ConfidenceMeta {
