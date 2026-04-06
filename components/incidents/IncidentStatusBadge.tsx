@@ -1,15 +1,29 @@
-import { Badge } from '@/components/ui/badge';
-import { IncidentStatus } from '@/lib/types';
+import { Badge } from "@/components/ui/badge";
+import { getIncidentStatusMeta } from "@/lib/incident-ui";
+import { IncidentStatus } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
-const statusConfig: Record<IncidentStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  received:        { label: 'Received',        variant: 'secondary' },
-  diagnosing:      { label: 'Diagnosing',      variant: 'outline' },
-  pr_opened:       { label: 'PR Opened',       variant: 'default' },
-  below_threshold: { label: 'Low Confidence',  variant: 'secondary' },
-  error:           { label: 'Error',           variant: 'destructive' },
-};
+export function IncidentStatusBadge({
+  status,
+  compact = false,
+}: {
+  status: IncidentStatus;
+  compact?: boolean;
+}) {
+  const meta = getIncidentStatusMeta(status);
 
-export function IncidentStatusBadge({ status }: { status: IncidentStatus }) {
-  const config = statusConfig[status];
-  return <Badge variant={config.variant}>{config.label}</Badge>;
+  return (
+    <Badge
+      variant="outline"
+      className={cn(
+        "h-8 gap-2 rounded-full border px-3 text-[11px] font-semibold uppercase tracking-[0.18em]",
+        compact && "h-7 px-2.5 text-[10px]",
+        meta.className
+      )}
+      title={meta.description}
+    >
+      <span className={cn("size-2 rounded-full", meta.dotClassName)} />
+      {meta.label}
+    </Badge>
+  );
 }
