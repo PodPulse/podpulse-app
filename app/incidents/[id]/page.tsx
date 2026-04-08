@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 
+import { AuthGuard } from '@/components/auth/AuthGuard';
 import { IncidentDetail } from '@/components/incidents/IncidentDetail';
 import { fetchIncident } from '@/lib/api';
 import { Incident } from '@/lib/types';
@@ -18,5 +19,9 @@ export default async function IncidentDetailPage({
     notFound();
   }
 
-  return <IncidentDetail incident={incident} />;
+  return (
+    <AuthGuard>
+      <IncidentDetail incident={incident} />
+    </AuthGuard>
+  );
 }

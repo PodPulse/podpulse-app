@@ -1,7 +1,7 @@
 import { Incident, IncidentStatus, PrStatus } from './types';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:5051';
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? '';
+const BACKEND_URL = process.env.BACKEND_URL ?? 'http://localhost:5051';
+const API_KEY = process.env.API_KEY ?? '';
 
 const headers = {
   'x-api-key': API_KEY,

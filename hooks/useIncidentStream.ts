@@ -5,9 +5,6 @@ import { useEffect, useEffectEvent } from 'react';
 import { normalizeIncident } from '@/lib/api';
 import { Incident } from '@/lib/types';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:5051';
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? '';
-
 export function useIncidentStream(
   onNewIncident: (incident: Incident) => void
 ) {
@@ -19,10 +16,7 @@ export function useIncidentStream(
     let eventSource: EventSource | undefined;
 
     const connect = () => {
-      const url = new URL(`${BACKEND_URL}/api/incidents/stream`);
-      url.searchParams.set('apiKey', API_KEY);
-
-      const nextEventSource = new EventSource(url.toString());
+      const nextEventSource = new EventSource('/api/incidents/stream');
       eventSource = nextEventSource;
 
       nextEventSource.onmessage = (event) => {

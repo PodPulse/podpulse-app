@@ -1,20 +1,18 @@
-import Link from "next/link";
 import {
   Activity,
-  ArrowRight,
   Bot,
   GitPullRequestArrow,
   ShieldCheck,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { IncidentsCTA } from "@/components/home/IncidentsCTA";
 import { fetchIncidents } from "@/lib/api";
 import { Incident } from "@/lib/types";
 
@@ -81,12 +79,7 @@ export default async function Home() {
             — from signal to pull request.
           </p>
           <div className="mt-6">
-            <Button asChild size="lg">
-              <Link href="/incidents">
-                Open incident command center
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
+            <IncidentsCTA />
           </div>
           <hr className="mt-10 mb-6 border-border/70" />
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">

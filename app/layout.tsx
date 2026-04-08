@@ -4,6 +4,7 @@ import { Activity } from "lucide-react";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 
 import { Badge } from "@/components/ui/badge";
+import { SignOutButton } from "@/components/nav/SignOutButton";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
@@ -79,6 +80,7 @@ export default function RootLayout({
                   <Activity className="size-3.5 text-blue-600" />
                   Live stream
                 </Badge>
+                <SignOutButton />
               </div>
             </div>
           </header>
