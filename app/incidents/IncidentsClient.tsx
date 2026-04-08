@@ -103,9 +103,9 @@ export function IncidentsClient({
       <div className="page-shell space-y-6">
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {stats.map(({ label, value, description, icon: Icon }) => (
-            <Card key={label} size="sm" className="bg-white/86">
+            <Card key={label} size="sm">
               <CardHeader>
-                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-blue-200/80 bg-blue-100/75 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl icon-blue">
                   <Icon className="size-5" />
                 </div>
                 <p className="technical-label">{label}</p>
@@ -120,7 +120,7 @@ export function IncidentsClient({
           ))}
         </section>
 
-        <Card className="overflow-hidden bg-white/84">
+        <Card className="overflow-hidden">
           <CardHeader className="border-b border-border/70 pb-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="space-y-2">

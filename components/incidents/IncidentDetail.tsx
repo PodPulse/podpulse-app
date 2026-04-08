@@ -67,9 +67,9 @@ function DiagnosticBlock({
   };
 
   return (
-    <div className="rounded-[24px] border border-border/70 bg-white/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+    <div className="surface-raised rounded-[24px] border border-border/70 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] dark:shadow-none">
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-2xl border border-blue-200/80 bg-blue-100/75 text-blue-700">
+        <div className="flex size-10 items-center justify-center rounded-2xl icon-blue">
           <Icon className="size-5" />
         </div>
         <div>
@@ -118,13 +118,14 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
               <h1 className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
                 {incident.podName}
               </h1>
-              <span className="rounded-full border border-slate-200/80 bg-slate-100/75 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+              <span className="badge-ns">
                 {incident.namespace}
               </span>
-              <span className="rounded-full border border-slate-200/80 bg-white/70 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-600">
+              <span className="badge-type-pill">
                 {incident.incidentType}
               </span>
               <IncidentStatusBadge status={incident.status} compact />
+              <PullRequestBadge status={prStatus} />
             </div>
             <ConfidenceIndicator score={incident.confidenceScore} compact />
           </div>
@@ -140,7 +141,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1.18fr)_360px]">
           <div className="space-y-6">
-            <Card className="bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(248,250,255,0.94))]">
+            <Card className="card-gradient-blue-soft">
               <CardHeader className="border-b border-border/70 pb-5">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <div className="space-y-2">
@@ -173,7 +174,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     />
                   </>
                 ) : (
-                  <div className="rounded-[26px] border border-cyan-200/80 bg-cyan-50/80 p-6 text-sm leading-7 text-cyan-950">
+                  <div className="rounded-[26px] border border-cyan-200/80 bg-cyan-50/80 p-6 text-sm leading-7 text-cyan-950 dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-200">
                     PodPulse is still assembling this diagnostic. Keep this page
                     open and the incident stream will continue updating.
                   </div>
@@ -181,7 +182,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/86">
+            <Card>
               <CardHeader className="border-b border-border/70 pb-5">
                 <div className="space-y-2">
                   <p className="eyebrow">Raw context</p>
@@ -192,7 +193,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
-                <pre className="max-h-[420px] overflow-auto rounded-[24px] border border-slate-200/80 bg-slate-950 p-5 font-mono text-xs leading-6 text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                <pre className="max-h-[420px] overflow-auto rounded-[24px] border border-slate-200/80 bg-slate-950 p-5 font-mono text-xs leading-6 text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] dark:border-slate-700/60">
                   {rawContext}
                 </pre>
               </CardContent>
@@ -200,9 +201,9 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
           </div>
 
           <div className="space-y-6 xl:sticky xl:top-[106px] xl:self-start">
-            <Card className="bg-white/88">
+            <Card>
               <CardHeader>
-                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-blue-200/80 bg-blue-100/75 text-blue-700">
+                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl icon-blue">
                   <GitPullRequestArrow className="size-5" />
                 </div>
                 <CardTitle>Pull request</CardTitle>
@@ -214,7 +215,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                 <PullRequestBadge status={prStatus} />
                 {incident.prUrl ? (
                   <div className="space-y-3">
-                    <p className="rounded-[20px] border border-border/70 bg-white/72 p-4 text-sm leading-6 text-muted-foreground">
+                    <p className="surface-raised rounded-[20px] border border-border/70 p-4 text-sm leading-6 text-muted-foreground">
                       {incident.prUrl}
                     </p>
                     <Button asChild className="w-full">
@@ -225,14 +226,14 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     </Button>
                   </div>
                 ) : (
-                  <p className="rounded-[20px] border border-border/70 bg-white/72 p-4 text-sm leading-6 text-muted-foreground">
+                  <p className="surface-raised rounded-[20px] border border-border/70 p-4 text-sm leading-6 text-muted-foreground">
                     No pull request is attached yet. Confidence threshold or pipeline state may still be blocking remediation.
                   </p>
                 )}
               </CardContent>
             </Card>
 
-            <Card className="bg-white/88">
+            <Card>
               <CardHeader>
                 <div className="space-y-2">
                   <p className="eyebrow">Signal summary</p>
@@ -240,9 +241,9 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="rounded-[22px] border border-border/70 bg-white/72 p-4">
+                <div className="surface-raised rounded-[22px] border border-border/70 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-2xl border border-border/70 bg-slate-100/80 text-slate-700">
+                    <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
                       <Clock3 className="size-5" />
                     </div>
                     <div>
@@ -253,9 +254,9 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     </div>
                   </div>
                 </div>
-                <div className="rounded-[22px] border border-border/70 bg-white/72 p-4">
+                <div className="surface-raised rounded-[22px] border border-border/70 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-2xl border border-border/70 bg-slate-100/80 text-slate-700">
+                    <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
                       <RotateCcw className="size-5" />
                     </div>
                     <div>
@@ -266,9 +267,9 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     </div>
                   </div>
                 </div>
-                <div className="rounded-[22px] border border-border/70 bg-white/72 p-4">
+                <div className="surface-raised rounded-[22px] border border-border/70 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-2xl border border-border/70 bg-slate-100/80 text-slate-700">
+                    <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
                       <Server className="size-5" />
                     </div>
                     <div>
@@ -281,13 +282,13 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
             </Card>
 
             {incident.status === 'below_threshold' && (
-              <Card className="border-amber-200/90 bg-[linear-gradient(180deg,rgba(255,251,235,0.98),rgba(255,247,237,0.94))]">
+              <Card className="card-gradient-amber border-amber-200/90 dark:border-amber-500/30 dark:bg-amber-950/30">
                 <CardHeader>
-                  <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-amber-200/80 bg-amber-100/75 text-amber-700">
+                  <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-amber-200/80 bg-amber-100/75 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-400">
                     <AlertTriangle className="size-5" />
                   </div>
                   <CardTitle>Confidence below threshold</CardTitle>
-                  <CardDescription className="text-amber-900/80">
+                  <CardDescription className="text-amber-900/80 dark:text-amber-300/80">
                     Review the AI recommendation before applying changes manually.
                   </CardDescription>
                 </CardHeader>
@@ -295,18 +296,18 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
             )}
 
             {incident.status === 'error' && incident.errorMessage && (
-              <Card className="border-rose-200/90 bg-[linear-gradient(180deg,rgba(255,241,242,0.98),rgba(255,228,230,0.94))]">
+              <Card className="card-gradient-rose border-rose-200/90 dark:border-rose-500/30 dark:bg-rose-950/30">
                 <CardHeader>
-                  <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-rose-200/80 bg-rose-100/75 text-rose-700">
+                  <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-rose-200/80 bg-rose-100/75 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-400">
                     <ShieldAlert className="size-5" />
                   </div>
                   <CardTitle>Pipeline error</CardTitle>
-                  <CardDescription className="text-rose-950/80">
+                  <CardDescription className="text-rose-950/80 dark:text-rose-300/80">
                     PodPulse could not complete processing for this incident.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <pre className="overflow-auto rounded-[20px] border border-rose-200/80 bg-white/70 p-4 font-mono text-xs leading-6 text-rose-950">
+                  <pre className="overflow-auto rounded-[20px] border border-rose-200/80 bg-white/70 p-4 font-mono text-xs leading-6 text-rose-950 dark:border-rose-500/30 dark:bg-rose-950/20 dark:text-rose-200">
                     {incident.errorMessage}
                   </pre>
                 </CardContent>

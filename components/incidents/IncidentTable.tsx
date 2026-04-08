@@ -20,7 +20,7 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
   if (incidents.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
-        <div className="flex size-14 items-center justify-center rounded-2xl border border-blue-200/80 bg-blue-100/70 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+        <div className="flex size-14 items-center justify-center rounded-2xl icon-blue">
           <Boxes className="size-6" />
         </div>
         <div className="space-y-1">
@@ -66,7 +66,7 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
                       {incident.podName}
                       <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
                     </Link>
-                    <span className="rounded-full border border-slate-200/80 bg-slate-100/75 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+                    <span className="badge-ns">
                       {incident.namespace}
                     </span>
                   </div>
@@ -75,7 +75,7 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
                       <Server className="size-3.5" />
                       {incident.nodeName}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-white/70 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-slate-600">
+                    <span className="badge-type-pill inline-flex items-center gap-1.5">
                       {incident.incidentType}
                     </span>
                   </div>

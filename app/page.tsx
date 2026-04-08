@@ -116,7 +116,7 @@ export default async function Home() {
           {workflow.map(({ title, description, icon: Icon }) => (
             <Card key={title}>
               <CardHeader>
-                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-blue-200/80 bg-blue-100/75 text-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
+                <div className="mb-2 flex size-11 items-center justify-center rounded-2xl icon-blue">
                   <Icon className="size-5" />
                 </div>
                 <CardTitle>{title}</CardTitle>
@@ -131,7 +131,7 @@ export default async function Home() {
             <CardHeader>
               <Badge
                 variant="outline"
-                className="mb-2 h-8 w-fit border-blue-200/90 bg-blue-100/75 px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-900"
+                className="mb-2 h-8 w-fit border-blue-200/90 bg-blue-100/75 px-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-900 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300"
               >
                 Kubernetes-native
               </Badge>
@@ -146,9 +146,9 @@ export default async function Home() {
             </CardHeader>
           </Card>
 
-          <Card className="bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(239,246,255,0.95))]">
+          <Card className="card-gradient-blue">
             <CardHeader>
-              <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-emerald-200/80 bg-emerald-100/70 text-emerald-700">
+              <div className="mb-2 flex size-11 items-center justify-center rounded-2xl border border-emerald-200/80 bg-emerald-100/70 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
                 <ShieldCheck className="size-5" />
               </div>
               <CardTitle>Trustworthy by design</CardTitle>

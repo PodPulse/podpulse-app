@@ -40,11 +40,14 @@ export default function LoginPage() {
       <div className="w-full max-w-sm space-y-8">
         <div className="flex flex-col items-center gap-3 text-center">
           <Link href="/" className="flex items-center gap-3">
-            <span className="relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/15 bg-[linear-gradient(135deg,#0f172a,#0f6fff_60%,#38bdf8)] shadow-[0_18px_40px_-24px_rgba(15,23,42,0.8)]">
-              <span className="absolute inset-[5px] rounded-[14px] border border-white/25" />
-              <span className="relative size-3 rounded-full bg-white shadow-[0_0_18px_rgba(255,255,255,0.8)]" />
+            <span className="shrink-0 shadow-[0_18px_40px_-24px_rgba(15,23,42,0.8)]">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect width="36" height="36" rx="8" fill="#0f172a"/>
+                <path d="M6 12 L12 18 L6 24" stroke="#4f8ef7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                <polyline points="15,18 17,18 19,12 22,24 24,15 26,18 30,18" stroke="#e2e8f0" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+              </svg>
             </span>
-            <span className="font-heading text-lg font-semibold tracking-[-0.04em] text-slate-950">
+            <span className="font-heading text-lg font-semibold tracking-[-0.04em] text-foreground">
               PodPulse
             </span>
           </Link>
@@ -76,7 +79,7 @@ export default function LoginPage() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400"
+                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
                   placeholder="demo"
                 />
               </div>
@@ -95,13 +98,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400"
+                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
                   placeholder="••••••••"
                 />
               </div>
 
               {error && (
-                <p className="rounded-[12px] border border-rose-200/80 bg-rose-50/80 px-3 py-2 text-sm text-rose-700">
+                <p className="rounded-[12px] border border-rose-200/80 bg-rose-50/80 px-3 py-2 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
                   {error}
                 </p>
               )}
