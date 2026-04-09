@@ -1,14 +1,14 @@
+import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
 const BACKEND_URL = process.env.BACKEND_URL ?? 'http://localhost:5051';
-const API_KEY = process.env.API_KEY ?? '';
 
 export async function GET(_req: NextRequest) {
-  const url = new URL(`${BACKEND_URL}/api/incidents/stream`);
-  url.searchParams.set('apiKey', API_KEY);
+  const cookieStore = await cookies();
+  const token = cookieStore.get('pp_auth')?.value;
 
-  const upstream = await fetch(url.toString(), {
-    headers: { 'x-api-key': API_KEY },
+  const upstream = await fetch(`${BACKEND_URL}/api/incidents/stream`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   return new Response(upstream.body, {

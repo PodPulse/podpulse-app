@@ -1,30 +1,21 @@
-import { Incident, IncidentStatus, PrStatus } from './types';
+import { cookies } from 'next/headers';
+import { Incident } from './types';
+import { normalizeIncident } from './normalizers';
+
+export { normalizeIncident };
 
 const BACKEND_URL = process.env.BACKEND_URL ?? 'http://localhost:5051';
-const API_KEY = process.env.API_KEY ?? '';
 
-const headers = {
-  'x-api-key': API_KEY,
-  'Content-Type': 'application/json',
-};
-
-const STATUS_MAP: Record<string, IncidentStatus> = {
-  propened: 'pr_opened',
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function normalizeIncident(raw: any): Incident {
-  return {
-    ...raw,
-    status: STATUS_MAP[raw.status] ?? (raw.status as IncidentStatus),
-    prUrl: raw.prUrl ?? null,
-    prStatus: ((raw.prStatus ?? 'none') as string).toLowerCase() as PrStatus,
-  };
+async function authHeaders(): Promise<HeadersInit> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('pp_auth')?.value;
+  if (!token) return {};
+  return { Authorization: `Bearer ${token}` };
 }
 
 export async function fetchIncidents(limit = 50): Promise<Incident[]> {
   const res = await fetch(`${BACKEND_URL}/api/incidents?limit=${limit}`, {
-    headers,
+    headers: await authHeaders(),
     cache: 'no-store',
   });
 
@@ -34,7 +25,7 @@ export async function fetchIncidents(limit = 50): Promise<Incident[]> {
 
 export async function fetchIncident(id: string): Promise<Incident> {
   const res = await fetch(`${BACKEND_URL}/api/incidents/${id}`, {
-    headers,
+    headers: await authHeaders(),
     cache: 'no-store',
   });
 

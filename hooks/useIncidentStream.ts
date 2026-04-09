@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent } from 'react';
 
-import { normalizeIncident } from '@/lib/api';
+import { normalizeIncident } from '@/lib/normalizers';
 import { Incident } from '@/lib/types';
 
 export function useIncidentStream(

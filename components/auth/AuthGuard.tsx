@@ -1,21 +1,5 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-
+// Auth is now handled by Next.js middleware (middleware.ts).
+// This component is kept as a no-op wrapper for backwards compatibility.
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const [checked, setChecked] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem('podpulse_demo_auth') !== 'true') {
-      router.replace('/login');
-    } else {
-      setChecked(true);
-    }
-  }, [router]);
-
-  if (!checked) return null;
-
   return <>{children}</>;
 }

@@ -11,9 +11,10 @@ export function SignOutButton() {
 
   if (HIDDEN_ON.includes(pathname)) return null;
 
-  const handleSignOut = () => {
-    localStorage.removeItem('podpulse_demo_auth');
+  const handleSignOut = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
+    router.refresh();
   };
 
   return (

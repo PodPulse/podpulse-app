@@ -5,7 +5,7 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 
 import { Badge } from "@/components/ui/badge";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { SignOutButton } from "@/components/nav/SignOutButton";
+import { ProfileMenu } from "@/components/nav/ProfileMenu";
 import { ThemeToggle } from "@/components/nav/ThemeToggle";
 import { cn } from "@/lib/utils";
 
@@ -91,7 +91,7 @@ export default function RootLayout({
                   Live stream
                 </Badge>
                 <ThemeToggle />
-                <SignOutButton />
+                <ProfileMenu />
               </div>
             </div>
           </header>
