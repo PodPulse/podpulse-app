@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Activity } from 'lucide-react';
@@ -20,10 +20,24 @@ function RegisterForm() {
   const token = searchParams.get('token') ?? '';
 
   const [email, setEmail]           = useState('');
+  const [emailLocked, setEmailLocked] = useState(false);
   const [password, setPassword]     = useState('');
   const [confirm, setConfirm]       = useState('');
   const [error, setError]           = useState('');
   const [loading, setLoading]       = useState(false);
+
+  useEffect(() => {
+    if (!token) return;
+    fetch(`/api/auth/invite-info?token=${encodeURIComponent(token)}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.email) {
+          setEmail(data.email);
+          setEmailLocked(true);
+        }
+      })
+      .catch(() => {});
+  }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,9 +126,10 @@ function RegisterForm() {
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => !emailLocked && setEmail(e.target.value)}
                   required
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
+                  disabled={emailLocked}
+                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="you@example.com"
                 />
               </div>
