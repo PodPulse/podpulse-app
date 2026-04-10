@@ -19,24 +19,27 @@ function RegisterForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') ?? '';
 
-  const [email, setEmail]           = useState('');
+  const [email, setEmail]             = useState('');
   const [emailLocked, setEmailLocked] = useState(false);
-  const [password, setPassword]     = useState('');
-  const [confirm, setConfirm]       = useState('');
-  const [error, setError]           = useState('');
-  const [loading, setLoading]       = useState(false);
+  const [password, setPassword]       = useState('');
+  const [confirm, setConfirm]         = useState('');
+  const [error, setError]             = useState('');
+  const [loading, setLoading]         = useState(false);
+  const [tokenState, setTokenState]   = useState<'checking' | 'valid' | 'invalid'>('checking');
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      setTokenState('invalid');
+      return;
+    }
     fetch(`/api/auth/invite-info?token=${encodeURIComponent(token)}`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => {
-        if (data?.email) {
-          setEmail(data.email);
-          setEmailLocked(true);
-        }
+      .then(async (r) => {
+        if (!r.ok) { setTokenState('invalid'); return; }
+        const data = await r.json();
+        if (data?.email) { setEmail(data.email); setEmailLocked(true); }
+        setTokenState('valid');
       })
-      .catch(() => {});
+      .catch(() => setTokenState('invalid'));
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,89 +110,107 @@ function RegisterForm() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {!token && (
-              <p className="mb-4 rounded-[12px] border border-amber-200/80 bg-amber-50/80 px-3 py-2 text-sm text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
-                Missing invite token. Please use the link from your invitation email.
-              </p>
+            {/* Checking token validity */}
+            {tokenState === 'checking' && (
+              <p className="py-4 text-center text-sm text-muted-foreground">Verifying your invitation…</p>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                >
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => !emailLocked && setEmail(e.target.value)}
-                  required
-                  disabled={emailLocked}
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-60"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="password"
-                  className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                >
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
-                  placeholder="Min. 8 characters"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label
-                  htmlFor="confirm"
-                  className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
-                >
-                  Confirm password
-                </label>
-                <input
-                  id="confirm"
-                  type="password"
-                  autoComplete="new-password"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  required
-                  className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              {error && (
-                <p className="rounded-[12px] border border-rose-200/80 bg-rose-50/80 px-3 py-2 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
-                  {error}
+            {/* Invalid / expired / used token */}
+            {tokenState === 'invalid' && (
+              <div className="space-y-4">
+                <div className="rounded-[12px] border border-rose-200/80 bg-rose-50/80 px-4 py-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+                  <p className="text-sm font-medium text-rose-700 dark:text-rose-300">
+                    This invitation link is invalid, expired, or has already been used.
+                  </p>
+                  <p className="mt-1 text-xs text-rose-600/80 dark:text-rose-400/80">
+                    Please ask your administrator to send you a new invitation.
+                  </p>
+                </div>
+                <p className="text-center text-xs text-muted-foreground">
+                  Already have an account?{' '}
+                  <Link href="/login" className="text-blue-500 hover:underline">Sign in</Link>
                 </p>
-              )}
+              </div>
+            )}
 
-              <Button type="submit" className="w-full" disabled={loading || !token}>
-                {loading ? 'Creating account…' : 'Create account'}
-              </Button>
+            {/* Valid token — show form */}
+            {tokenState === 'valid' && (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="email"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => !emailLocked && setEmail(e.target.value)}
+                    required
+                    disabled={emailLocked}
+                    className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-60"
+                    placeholder="you@example.com"
+                  />
+                </div>
 
-              <p className="text-center text-xs text-muted-foreground">
-                Already have an account?{' '}
-                <Link href="/login" className="text-blue-500 hover:underline">
-                  Sign in
-                </Link>
-              </p>
-            </form>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="password"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                  >
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
+                    placeholder="Min. 8 characters"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="confirm"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                  >
+                    Confirm password
+                  </label>
+                  <input
+                    id="confirm"
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirm}
+                    onChange={(e) => setConfirm(e.target.value)}
+                    required
+                    className="flex h-10 w-full rounded-[14px] border border-border/70 bg-white/72 px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-400 dark:bg-white/[0.06]"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                {error && (
+                  <p className="rounded-[12px] border border-rose-200/80 bg-rose-50/80 px-3 py-2 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+                    {error}
+                  </p>
+                )}
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? 'Creating account…' : 'Create account'}
+                </Button>
+
+                <p className="text-center text-xs text-muted-foreground">
+                  Already have an account?{' '}
+                  <Link href="/login" className="text-blue-500 hover:underline">Sign in</Link>
+                </p>
+              </form>
+            )}
           </CardContent>
         </Card>
 
