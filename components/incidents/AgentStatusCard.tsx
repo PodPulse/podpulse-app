@@ -85,7 +85,7 @@ export function AgentStatusCard() {
             ok={state.backendReachable}
           />
           <Row
-            label="Last ping"
+            label="Last agent ping"
             value={
               state.agent?.secondsSinceLastSeen != null
                 ? formatElapsed(state.agent.secondsSinceLastSeen)
