@@ -10,6 +10,7 @@ import {
   ServerCog,
 } from 'lucide-react';
 
+import { AgentStatusCard } from '@/components/incidents/AgentStatusCard';
 import { IncidentTable } from '@/components/incidents/IncidentTable';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useIncidentStream } from '@/hooks/useIncidentStream';
@@ -118,6 +119,7 @@ export function IncidentsClient({
               </CardContent>
             </Card>
           ))}
+          <AgentStatusCard />
         </section>
 
         <Card className="overflow-hidden">
