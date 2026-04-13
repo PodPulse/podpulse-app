@@ -4,16 +4,20 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Bot,
+  Box,
   BrainCircuit,
   Clock3,
   GitPullRequestArrow,
+  Layers,
   RotateCcw,
   Server,
   ShieldAlert,
   Sparkles,
+  Terminal,
 } from 'lucide-react';
 
 import { ConfidenceIndicator } from '@/components/incidents/ConfidenceIndicator';
+import { CopyButton } from '@/components/incidents/CopyButton';
 import { IncidentStatusBadge } from '@/components/incidents/IncidentStatusBadge';
 import { PullRequestBadge } from '@/components/incidents/PullRequestBadge';
 import { Button } from '@/components/ui/button';
@@ -24,7 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { formatIncidentDate } from '@/lib/incident-ui';
+import { formatIncidentDate, getBlockReasonShort } from '@/lib/incident-ui';
 import { Incident } from '@/lib/types';
 
 function DiagnosticBlock({
@@ -115,9 +119,16 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
 
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
-                {incident.podName}
-              </h1>
+              <div>
+                <h1 className="text-2xl font-semibold tracking-[-0.04em] text-foreground">
+                  {incident.workloadName ?? incident.podName}
+                </h1>
+                {incident.workloadName && (
+                  <p className="mt-0.5 text-xs text-muted-foreground font-mono">
+                    {incident.podName}
+                  </p>
+                )}
+              </div>
               <span className="badge-ns">
                 {incident.namespace}
               </span>
@@ -184,20 +195,49 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
 
             <Card>
               <CardHeader className="border-b border-border/70 pb-5">
-                <div className="space-y-2">
-                  <p className="eyebrow">Raw context</p>
-                  <CardTitle className="text-2xl">Raw incident context (JSON)</CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
+                    <Terminal className="size-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="eyebrow">Quick commands</p>
+                    <CardTitle className="text-lg">kubectl</CardTitle>
+                  </div>
                 </div>
-                <CardDescription>
-                  Raw JSON payload sent by the in-cluster agent.
-                </CardDescription>
               </CardHeader>
-              <CardContent className="pt-6">
+              <CardContent className="space-y-3 pt-6">
+                {[
+                  `kubectl describe pod ${incident.podName} -n ${incident.namespace}`,
+                  `kubectl logs ${incident.podName} -n ${incident.namespace} --previous`,
+                ].map((cmd) => (
+                  <div
+                    key={cmd}
+                    className="flex items-center justify-between gap-3 rounded-[20px] border border-slate-200/80 bg-slate-950 px-4 py-3 dark:border-slate-700/60"
+                  >
+                    <code className="font-mono text-xs text-slate-100 break-all">{cmd}</code>
+                    <CopyButton text={cmd} />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <details className="group rounded-[var(--radius-card)] border border-border/70 bg-card text-card-foreground shadow-sm">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 [&::-webkit-details-marker]:hidden">
+                <div className="space-y-1">
+                  <p className="eyebrow">Raw context</p>
+                  <p className="text-xl font-semibold tracking-tight">Raw incident context (JSON)</p>
+                  <p className="text-sm text-muted-foreground">Raw JSON payload sent by the in-cluster agent.</p>
+                </div>
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-muted/60 text-muted-foreground transition-transform group-open:rotate-180">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+              </summary>
+              <div className="border-t border-border/70 p-6">
                 <pre className="max-h-[420px] overflow-auto rounded-[24px] border border-slate-200/80 bg-slate-950 p-5 font-mono text-xs leading-6 text-slate-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] dark:border-slate-700/60">
                   {rawContext}
                 </pre>
-              </CardContent>
-            </Card>
+              </div>
+            </details>
           </div>
 
           <div className="space-y-6 xl:sticky xl:top-[106px] xl:self-start">
@@ -226,9 +266,12 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     </Button>
                   </div>
                 ) : (
-                  <p className="surface-raised rounded-[20px] border border-border/70 p-4 text-sm leading-6 text-muted-foreground">
-                    No pull request is attached yet. Confidence threshold or pipeline state may still be blocking remediation.
-                  </p>
+                  <div className="surface-raised rounded-[20px] border border-border/70 p-4 space-y-2">
+                    <p className="text-sm font-medium text-foreground">PR not opened</p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {getBlockReasonShort(incident)}
+                    </p>
+                  </div>
                 )}
               </CardContent>
             </Card>
@@ -237,7 +280,7 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
               <CardHeader>
                 <div className="space-y-2">
                   <p className="eyebrow">Signal summary</p>
-                  <CardTitle>Fast scan</CardTitle>
+                  <CardTitle>Cluster signals</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -254,6 +297,32 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                     </div>
                   </div>
                 </div>
+                <div className="surface-raised rounded-[22px] border border-border/70 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
+                      <Layers className="size-5" />
+                    </div>
+                    <div>
+                      <p className="technical-label">Namespace</p>
+                      <p className="mt-1 text-sm text-foreground">{incident.namespace}</p>
+                    </div>
+                  </div>
+                </div>
+                {incident.workloadName && (
+                  <div className="surface-raised rounded-[22px] border border-border/70 p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">
+                        <Box className="size-5" />
+                      </div>
+                      <div>
+                        <p className="technical-label">Workload</p>
+                        <p className="mt-1 text-sm text-foreground">
+                          {incident.workloadKind ?? 'Deployment'} / {incident.workloadName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="surface-raised rounded-[22px] border border-border/70 p-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-2xl icon-slate">

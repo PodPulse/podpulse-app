@@ -8,8 +8,11 @@ const STATUS_MAP: Record<string, IncidentStatus> = {
 export function normalizeIncident(raw: any): Incident {
   return {
     ...raw,
-    status: STATUS_MAP[raw.status] ?? (raw.status as IncidentStatus),
-    prUrl:   raw.prUrl ?? null,
-    prStatus: ((raw.prStatus ?? 'none') as string).toLowerCase() as PrStatus,
+    status:                  STATUS_MAP[raw.status] ?? (raw.status as IncidentStatus),
+    prUrl:                   raw.prUrl ?? null,
+    prStatus:                ((raw.prStatus ?? 'none') as string).toLowerCase() as PrStatus,
+    workloadKind:            raw.workloadKind ?? null,
+    workloadName:            raw.workloadName ?? null,
+    confidencePenaltyReason: raw.confidencePenaltyReason ?? null,
   };
 }

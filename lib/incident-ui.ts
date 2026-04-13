@@ -1,4 +1,4 @@
-import { IncidentStatus, PrStatus } from "@/lib/types";
+import { Incident, IncidentStatus, PrStatus } from "@/lib/types";
 
 type StatusMeta = {
   label: string;
@@ -23,7 +23,7 @@ type ConfidenceMeta = {
 
 const incidentStatusMeta: Record<IncidentStatus, StatusMeta> = {
   received: {
-    label: "Queued",
+    label: "Received",
     description: "Incident captured and awaiting analysis",
     className:
       "border-slate-200/80 bg-slate-100/80 text-slate-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] dark:border-slate-700/60 dark:bg-slate-800/60 dark:text-slate-300 dark:shadow-none",
@@ -36,6 +36,13 @@ const incidentStatusMeta: Record<IncidentStatus, StatusMeta> = {
       "border-cyan-200/90 bg-cyan-100/80 text-cyan-900 shadow-[0_0_0_1px_rgba(14,165,233,0.08)] dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-300 dark:shadow-none",
     dotClassName: "bg-cyan-500 shadow-[0_0_0_6px_rgba(6,182,212,0.16)] animate-pulse",
   },
+  diagnosed: {
+    label: "Diagnosed",
+    description: "AI diagnostic complete, remediation pending",
+    className:
+      "border-cyan-200/90 bg-cyan-100/80 text-cyan-900 shadow-[0_0_0_1px_rgba(14,165,233,0.08)] dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-300 dark:shadow-none",
+    dotClassName: "bg-cyan-500 dark:bg-cyan-400",
+  },
   pr_opened: {
     label: "PR Opened",
     description: "Remediation proposal shipped to GitHub",
@@ -43,8 +50,15 @@ const incidentStatusMeta: Record<IncidentStatus, StatusMeta> = {
       "border-blue-200/90 bg-blue-100/85 text-blue-900 shadow-[0_10px_30px_-20px_rgba(37,99,235,0.55)] dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300 dark:shadow-none",
     dotClassName: "bg-blue-500 shadow-[0_0_0_6px_rgba(59,130,246,0.15)] dark:shadow-[0_0_0_6px_rgba(59,130,246,0.08)]",
   },
+  pr_updated: {
+    label: "PR Updated",
+    description: "Existing remediation PR was updated with a revised fix",
+    className:
+      "border-blue-200/90 bg-blue-100/85 text-blue-900 shadow-[0_10px_30px_-20px_rgba(37,99,235,0.55)] dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300 dark:shadow-none",
+    dotClassName: "bg-blue-500 shadow-[0_0_0_6px_rgba(59,130,246,0.15)] dark:shadow-[0_0_0_6px_rgba(59,130,246,0.08)]",
+  },
   below_threshold: {
-    label: "Low Confidence",
+    label: "Below Threshold",
     description: "Signal detected but confidence stayed below rollout threshold",
     className:
       "border-amber-200/90 bg-amber-100/80 text-amber-950 shadow-[0_10px_30px_-22px_rgba(217,119,6,0.45)] dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300 dark:shadow-none",
@@ -135,6 +149,16 @@ export function getConfidenceMeta(score: number | null): ConfidenceMeta {
     barClassName: "bg-[linear-gradient(90deg,#d97706,#f59e0b)]",
     trackClassName: "bg-amber-100/80 dark:bg-amber-500/15",
   };
+}
+
+export function getBlockReasonShort(incident: Incident): string {
+  if (incident.status === 'error') return 'Pipeline error';
+  if (incident.status === 'diagnosing') return 'Diagnosing…';
+  if (incident.status === 'received') return 'Queued';
+  if (!incident.workloadName) return 'No workload resolved';
+  if (incident.confidencePenaltyReason) return incident.confidencePenaltyReason;
+  if (incident.status === 'below_threshold') return 'Below confidence threshold';
+  return 'No manifest resolved';
 }
 
 export function formatIncidentDate(

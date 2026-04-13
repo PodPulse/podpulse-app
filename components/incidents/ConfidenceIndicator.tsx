@@ -13,16 +13,13 @@ export function ConfidenceIndicator({
 
   return (
     <div className={cn("min-w-32 space-y-2", compact && "min-w-28 space-y-1.5")}>
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
         <Badge
           variant="outline"
           className={cn("border px-2.5 py-1 font-medium", meta.badgeClassName)}
         >
           {meta.valueLabel}
         </Badge>
-        <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          {meta.label}
-        </span>
       </div>
       <div className={cn("h-2 overflow-hidden rounded-full", meta.trackClassName)}>
         <div

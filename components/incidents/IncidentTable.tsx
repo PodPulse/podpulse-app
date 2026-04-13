@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { formatIncidentDate } from '@/lib/incident-ui';
+import { formatIncidentDate, getBlockReasonShort } from '@/lib/incident-ui';
 import { Incident } from '@/lib/types';
 
 export function IncidentTable({ incidents }: { incidents: Incident[] }) {
@@ -57,26 +57,26 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
           return (
             <TableRow key={incident.id} className="group">
               <TableCell className="pl-6">
-                <div className="min-w-[250px] space-y-3">
+                <div className="min-w-[250px] space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
                       href={`/incidents/${incident.id}`}
-                      className="inline-flex items-center gap-1.5 text-base font-semibold tracking-[-0.03em] text-foreground transition-colors group-hover:text-blue-700"
+                      className="inline-flex items-center gap-1.5 text-base font-semibold
+                                tracking-[-0.03em] text-foreground transition-colors
+                                group-hover:text-blue-700"
                     >
-                      {incident.podName}
+                      {incident.workloadName ?? incident.podName}
                       <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
                     </Link>
-                    <span className="badge-ns">
-                      {incident.namespace}
-                    </span>
+                    <span className="badge-ns">{incident.namespace}</span>
                   </div>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                    <span className="badge-type-pill inline-flex items-center gap-1.5">
+                      {incident.incidentType}
+                    </span>
                     <span className="inline-flex items-center gap-1.5">
                       <Server className="size-3.5" />
                       {incident.nodeName}
-                    </span>
-                    <span className="badge-type-pill inline-flex items-center gap-1.5">
-                      {incident.incidentType}
                     </span>
                   </div>
                 </div>
@@ -102,9 +102,6 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
                     <Clock3 className="size-3.5 text-muted-foreground" />
                     {formatIncidentDate(incident.detectedAt)}
                   </div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                    Cluster {incident.clusterId.slice(0, 8)}
-                  </p>
                 </div>
               </TableCell>
 
@@ -123,8 +120,8 @@ export function IncidentTable({ incidents }: { incidents: Incident[] }) {
                       </a>
                     </Button>
                   ) : (
-                    <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                      Awaiting remediation
+                    <span className="text-xs leading-5 text-muted-foreground max-w-[180px] text-right">
+                      {getBlockReasonShort(incident)}
                     </span>
                   )}
                 </div>

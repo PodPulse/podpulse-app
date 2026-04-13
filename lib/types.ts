@@ -1,13 +1,15 @@
 export type IncidentStatus =
   | 'received'
   | 'diagnosing'
+  | 'diagnosed'
   | 'pr_opened'
+  | 'pr_updated'
   | 'below_threshold'
   | 'error';
 
 export type PrStatus = 'none' | 'opened' | 'merged' | 'closed';
 
-export type IncidentType = 'OomKilled';
+export type IncidentType = 'OomKilled' | 'CrashLoopBackOff';
 
 export interface Incident {
   id: string;
@@ -25,6 +27,13 @@ export interface Incident {
   rootCause: string | null;
   proposedFix: string | null;
   confidenceScore: number | null;
+
+  // Workload
+  workloadName: string | null;
+  workloadKind: string | null;
+
+  // Manifest resolution
+  confidencePenaltyReason: string | null;
 
   // PR
   prUrl: string | null;
