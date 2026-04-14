@@ -247,9 +247,6 @@ export function IncidentDetail({ incident }: { incident: Incident }) {
                   <GitPullRequestArrow className="size-5" />
                 </div>
                 <CardTitle>Pull request</CardTitle>
-                <CardDescription>
-                  The GitHub section stays prominent so the diagnostic can move straight into review.
-                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <PullRequestBadge status={prStatus} />
