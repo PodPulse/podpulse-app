@@ -155,7 +155,7 @@ export function getBlockReasonShort(incident: Incident): string {
   if (incident.status === 'error') return 'Pipeline error';
   if (incident.status === 'diagnosing') return 'Diagnosing…';
   if (incident.status === 'received') return 'Queued';
-  if (!incident.workloadName) return 'No workload resolved';
+  if (!incident.workloadName) return 'Insight only';
   if (incident.confidencePenaltyReason) return incident.confidencePenaltyReason;
   if (incident.status === 'below_threshold') return 'Below confidence threshold';
   return 'No manifest resolved';

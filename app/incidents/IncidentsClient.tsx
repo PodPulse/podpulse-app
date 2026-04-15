@@ -76,7 +76,7 @@ export function IncidentsClient({
     {
       label: 'PRs opened',
       value: `${prOpenedCount}`,
-      description: 'GitHub remediation proposals ready for review.',
+      description: 'Pull requests ready for review in your repo.',
       icon: GitPullRequestArrow,
     },
     {
@@ -90,13 +90,7 @@ export function IncidentsClient({
       value: `${incidents.length}`,
       description: 'Active incident records in the workspace.',
       icon: Layers,
-    },
-    {
-      label: 'GitHub handoff',
-      value: `${prOpenedCount}`,
-      description: 'Fixes already promoted into pull requests.',
-      icon: GitPullRequest,
-    },
+    }
   ];
 
   return (
