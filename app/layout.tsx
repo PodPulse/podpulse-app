@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     default: "PodPulse",
     template: "%s | PodPulse",
   },
-  description: "AI control plane for Kubernetes incident diagnostics and remediation.",
+  description: "Kubernetes incident operator.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -71,7 +71,7 @@ export default function RootLayout({
                     PodPulse
                   </div>
                   <p className="truncate text-xs text-muted-foreground">
-                    AI control plane for Kubernetes incidents
+                    Kubernetes incident operator
                   </p>
                 </div>
               </Link>
