@@ -9,6 +9,7 @@ import { ProfileMenu } from "@/components/nav/ProfileMenu";
 import { ThemeToggle } from "@/components/nav/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import "./globals.css";
 
@@ -103,6 +104,7 @@ export default function RootLayout({
         </div>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
