@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProfileMenu } from "@/components/nav/ProfileMenu";
 import { ThemeToggle } from "@/components/nav/ThemeToggle";
 import { cn } from "@/lib/utils";
+import { Analytics } from "@vercel/analytics/next"
 
 import "./globals.css";
 
@@ -101,6 +102,7 @@ export default function RootLayout({
           </div>
         </div>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
